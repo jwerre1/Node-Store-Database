@@ -1,0 +1,25 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "inventory app using node and mysql",
+  "main": "bamazonCustomer.js",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "inquirer": "^6.2.2",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwerre1/bamazon.git"
+  },
+  "author": "Jordan Werre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwerre1/bamazon/issues"
+  },
+  "homepage": "https://github.com/jwerre1/bamazon#readme"
+}
