@@ -2,6 +2,7 @@ var mysql = require('mysql');
 var inquirer = require('inquirer');
 var Table = require('cli-table');
 
+
 var connection = mysql.createConnection({
     host: "localhost",
   
@@ -15,14 +16,16 @@ var connection = mysql.createConnection({
   
   connection.connect(function(err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
-    genTable();
+    // console.log("connected as id " + connection.threadId + "\n");
     startFunc();
+   
+
+
     
     connection.end();
   });
 
-  function genTable() {
+  function startFunc() {
 
     connection.query("SELECT * FROM `products`", function(err, results) {
         if (err) throw err;
@@ -37,31 +40,19 @@ var connection = mysql.createConnection({
                 [results[i].id, results[i].product_name, results[i].department_name, results[i].price, results[i].stock_quantity]
             );
         }
-         
-        console.log(table.toString());
+
+        console.log("\n" + table.toString() + "\n");
+
+        inquirer.prompt([
+    
+          {
+              type: "input",
+              message: "What is the ID of the product you would like to buy?",
+              name: "productSelect"
+          }
+      ]).then(function (answer) {
+          console.log(answer.productSelect);
+      })
+ 
       });
-
   }
-
-  function startFunc() {
-
-    // connection.query("SELECT * FROM `products`", function(err, result) {
-    //     if (err) throw err;
-
-    //     var inventoryList = [];
-
-    //     for (i = 0; i < result.length; i++) {
-    //         inventoryList.push("ID: " + result[i].id + " || Name: " + result[i].product_name + " || Price: " + result[i].price)
-    //     }
-    //   });
-
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is the ID of the product you would like to buy?",
-            name: "productSelect"
-        }
-    ]).then(function (answer) {
-        console.log(answer.productSelect);
-    })
-}
