@@ -4,55 +4,173 @@ var Table = require('cli-table');
 
 
 var connection = mysql.createConnection({
-    host: "localhost",
-  
-    port: 8889,
-  
-    user: "root",
-  
-    password: "root",
-    database: "bamazon"
-  });
-  
-  connection.connect(function(err) {
+  host: "localhost",
+
+  port: 8889,
+
+  user: "root",
+
+  password: "root",
+  database: "bamazon"
+});
+
+connection.connect(function (err) {
+  if (err) throw err;
+  // console.log("connected as id " + connection.threadId + "\n");
+  startFunc();
+});
+
+function startFunc() {
+
+  connection.query("SELECT * FROM `products`", function (err, results) {
     if (err) throw err;
-    // console.log("connected as id " + connection.threadId + "\n");
-    startFunc();
-   
+    var table = new Table({
+      head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
+      , colWidths: [5, 20, 15, 10, 17]
+    });
+
+    // table is an Array, so you can `push`, `unshift`, `splice` and friends
+    for (i = 0; i < results.length; i++) {
+      table.push(
+        [results[i].id, results[i].product_name, results[i].department_name, results[i].price, results[i].stock_quantity]
+      );
+    }
+
+    console.log("\n" + table.toString() + "\n");
 
 
-    
-    connection.end();
+
+    inquirer.prompt([
+
+      {
+        type: "input",
+        message: "What is the ID of the product you would like to buy?",
+        name: "prodSelect"
+        ,
+        validate: function (answer) {
+          if (isNaN(answer) === true) {
+            return 'Please enter a number.';
+          }
+
+          return true;
+        }
+      },
+      {
+        type: "input",
+        message: "How many units would you like to buy?",
+        name: "prodAmount",
+
+        validate: function (answer) {
+          if (isNaN(answer) === true) {
+            return 'Please enter a number.';
+          }
+
+          return true;
+        }
+      }
+
+    ]).then(function (answer) {
+      console.log("worked");
+      var chosenItem;
+      for (j = 0; j < results.length; j++) {
+        if (results[j].id === parseInt(answer.prodSelect)) {
+          chosenItem = results[j];
+        }
+      }
+
+      console.log(chosenItem);
+
+      if (chosenItem.stock_quantity >= parseInt(answer.prodAmount)) {
+        console.log("working - ENOUGH");
+        var difference = chosenItem.stock_quantity - parseInt(answer.prodAmount);
+        connection.query(
+          "UPDATE products SET ? WHERE ?",
+          [
+            {
+              stock_quantity: difference
+            },
+            {
+              id: chosenItem.id
+            }
+          ],
+          function (error) {
+            if (error) throw error;
+            console.log("Bid placed successfully!");
+            // start();
+          }
+        );
+      }
+
+      else {
+        console.log("working - not enough")
+      }
+      connection.end();
+    })
   });
 
-  function startFunc() {
+}
 
-    connection.query("SELECT * FROM `products`", function(err, results) {
-        if (err) throw err;
-        var table = new Table({
-            head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
-          , colWidths: [5, 20, 15, 10, 17]
-        });
-         
-        // table is an Array, so you can `push`, `unshift`, `splice` and friends
-        for (i = 0; i < results.length; i++) {
-            table.push(
-                [results[i].id, results[i].product_name, results[i].department_name, results[i].price, results[i].stock_quantity]
-            );
-        }
+  // function prompt() {
 
-        console.log("\n" + table.toString() + "\n");
+  //   inquirer.prompt([
 
-        inquirer.prompt([
-    
-          {
-              type: "input",
-              message: "What is the ID of the product you would like to buy?",
-              name: "productSelect"
-          }
-      ]).then(function (answer) {
-          console.log(answer.productSelect);
-      })
- 
-      });
-  }
+  //     {
+  //         type: "input",
+  //         message: "What is the ID of the product you would like to buy?",
+  //         name: "prodSelect"
+  //     ,
+  //     validate: function(answer) {
+  //       if (isNaN(answer) === true) {
+  //       return 'Please enter a number.';
+  //       }
+
+  //       return true;
+  //   }
+  // },
+  //     {
+  //       type: "input",
+  //       message: "How many units would you like to buy?",
+  //       name: "prodAmount",
+
+  //       validate: function(answer) {
+  //         if (isNaN(answer) === true) {
+  //         return 'Please enter a number.';
+  //         }
+
+  //         return true;
+  //     }
+  //   }
+
+  // ]).then(function (answer) {
+  //   console.log("worked");
+  //   var chosenItem;
+  //   for (j = 0; j < results.length; j++) {
+  //     if (results[j].id === answer.prodSelect) {
+  //       chosenItem = results[j];
+
+  //       // console.log(j);
+  //       // if (results[j].stock_quantity >= answer.productAmount) {
+  //       //   console.log("possible!");
+  //       // }
+  //       // else {
+  //       //   console.log("Insufficent Quantity!");
+  //       // }
+
+  //     }
+  //     console.log(chosenItem);
+  //     // if (parseInt(answer.prodAmount) >= parseInt(chosenItem.stock_quantity)) {
+  //     //   console.log("working - ENOUGH");
+  //     // }
+
+  //     // else {
+  //     //   console.log("working - not enough")
+  //     // }
+  // }
+
+  // connection.end();
+  // })
+
+
+
+
+  // }
