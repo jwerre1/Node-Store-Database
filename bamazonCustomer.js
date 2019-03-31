@@ -35,10 +35,8 @@ function startFunc() {
         [results[i].id, results[i].product_name, results[i].department_name, results[i].price, results[i].stock_quantity]
       );
     }
-
+   
     console.log("\n" + table.toString() + "\n");
-
-
 
     inquirer.prompt([
 
@@ -53,7 +51,7 @@ function startFunc() {
           }
 
           return true;
-        }
+        },
       },
       {
         type: "input",
@@ -70,7 +68,7 @@ function startFunc() {
       }
 
     ]).then(function (answer) {
-      console.log("worked");
+      // console.log("worked");
       var chosenItem;
       for (j = 0; j < results.length; j++) {
         if (results[j].id === parseInt(answer.prodSelect)) {
@@ -78,11 +76,13 @@ function startFunc() {
         }
       }
 
-      console.log(chosenItem);
+      // console.log(chosenItem);
 
       if (chosenItem.stock_quantity >= parseInt(answer.prodAmount)) {
-        console.log("working - ENOUGH");
+        
         var difference = chosenItem.stock_quantity - parseInt(answer.prodAmount);
+        var totalCost = parseInt(answer.prodAmount) * chosenItem.price;
+        var totalCostDecimal = totalCost.toFixed(2);
         connection.query(
           "UPDATE products SET ? WHERE ?",
           [
@@ -95,82 +95,23 @@ function startFunc() {
           ],
           function (error) {
             if (error) throw error;
-            console.log("Bid placed successfully!");
-            // start();
+            console.log("Order fulfilled!");
+            console.log("Total Cost: " + totalCostDecimal + ".");
           }
         );
       }
 
       else {
-        console.log("working - not enough")
+        console.log("Insufficient quantity!")
       }
       connection.end();
     })
   });
-
 }
 
-  // function prompt() {
-
-  //   inquirer.prompt([
-
-  //     {
-  //         type: "input",
-  //         message: "What is the ID of the product you would like to buy?",
-  //         name: "prodSelect"
-  //     ,
-  //     validate: function(answer) {
-  //       if (isNaN(answer) === true) {
-  //       return 'Please enter a number.';
-  //       }
-
-  //       return true;
-  //   }
-  // },
-  //     {
-  //       type: "input",
-  //       message: "How many units would you like to buy?",
-  //       name: "prodAmount",
-
-  //       validate: function(answer) {
-  //         if (isNaN(answer) === true) {
-  //         return 'Please enter a number.';
-  //         }
-
-  //         return true;
-  //     }
-  //   }
-
-  // ]).then(function (answer) {
-  //   console.log("worked");
-  //   var chosenItem;
-  //   for (j = 0; j < results.length; j++) {
-  //     if (results[j].id === answer.prodSelect) {
-  //       chosenItem = results[j];
-
-  //       // console.log(j);
-  //       // if (results[j].stock_quantity >= answer.productAmount) {
-  //       //   console.log("possible!");
-  //       // }
-  //       // else {
-  //       //   console.log("Insufficent Quantity!");
-  //       // }
-
-  //     }
-  //     console.log(chosenItem);
-  //     // if (parseInt(answer.prodAmount) >= parseInt(chosenItem.stock_quantity)) {
-  //     //   console.log("working - ENOUGH");
-  //     // }
-
-  //     // else {
-  //     //   console.log("working - not enough")
-  //     // }
-  // }
-
-  // connection.end();
-  // })
 
 
 
 
-  // }
+
+   
