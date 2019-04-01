@@ -190,10 +190,14 @@ function prodAdd() {
                 name: "newID"
                 ,
                 validate: function (answer) {
-                    if (existID.indexOf(parseInt(answer)) !== -1) {
-                        console.log(existID);
-                        console.log(answer);
-                        return 'Please enter a unique.';
+                    if (isNaN(answer) === true) {
+                        return "Please enter a number.";
+                    }
+              
+                    else if (existID.indexOf(parseInt(answer)) !== -1) {
+                        // console.log(existID);
+                        // console.log(answer);
+                        return "Please enter a unique ID.";
                     }
                     return true;
                 },
