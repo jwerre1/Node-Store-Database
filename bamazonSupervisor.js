@@ -51,7 +51,7 @@ function prodSalesDept() {
 
         var table = new Table({
             head: ['department_id', 'department_name', 'over_head_costs', 'product_sales', 'total_profit']
-            , colWidths: [17, 17, 17, 15, 15]
+            , colWidths: [15, 17, 17, 15, 15]
         });
 
         // var deptIDs = [];
@@ -85,13 +85,18 @@ function prodSalesDept() {
 }
 
 function createDept() {
-    connection.query("SELECT `department_id` FROM `departments`", function (err, results) {
+    connection.query("SELECT department_id, department_name FROM departments", function (err, results) {
         if (err) throw err;
         // console.log(results);
         var existID = [];
+        var existName = [];
 
         for (i = 0; i < results.length; i++) {
-            existID.push(results[i].id);
+            existID.push(results[i].department_id);
+        }
+
+        for (i = 0; i < results.length; i++) {
+            existName.push(results[i].department_name);
         }
         // console.log(existID);
 
@@ -118,7 +123,16 @@ function createDept() {
             {
                 type: "input",
                 message: "What is the department name?",
-                name: "name"
+                name: "name",
+                validate: function (answer) {
+
+                   if (existName.indexOf(answer) !== -1) {
+                        // console.log(existID);
+                        // console.log(answer);
+                        return "Please enter a unique department name.";
+                    }
+                    return true;
+                },
             },
             {
                 type: "input",
