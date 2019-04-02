@@ -72,8 +72,10 @@ function prodSalesDept() {
             if (results[i].product_sales === null) {
                 results[i].product_sales = 0;
             }
+
+            var totalProfitTwo = totalProfit.toFixed(2);
             table.push(
-                [results[i].department_id, results[i].department_name, results[i].over_head_costs, results[i].product_sales, totalProfit]
+                [results[i].department_id, results[i].department_name, results[i].over_head_costs, results[i].product_sales, totalProfitTwo]
             );
         }
 

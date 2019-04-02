@@ -108,6 +108,12 @@ function inventAdd() {
             );
         }
 
+        var existID = [];
+
+        for (i = 0; i < results.length; i++) {
+            existID.push(results[i].id);
+        }
+
         console.log("\n" + table.toString() + "\n");
 
         inquirer.prompt([
@@ -120,6 +126,12 @@ function inventAdd() {
                 validate: function (answer) {
                     if (isNaN(answer) === true) {
                         return 'Please enter a number.';
+                    }
+
+                    else if (existID.indexOf(parseInt(answer)) === -1) {
+                        // console.log(existID);
+                        // console.log(answer);
+                        return "Please enter an existing ID.";
                     }
 
                     return true;
@@ -180,7 +192,6 @@ function prodAdd() {
         for (i = 0; i < results.length; i++) {
             existID.push(results[i].id);
         }
-        // console.log(existID);
 
         inquirer.prompt([
 
@@ -197,7 +208,7 @@ function prodAdd() {
                     else if (existID.indexOf(parseInt(answer)) !== -1) {
                         // console.log(existID);
                         // console.log(answer);
-                        return "Please enter a unique ID.";
+                        return "Please enter an unique ID.";
                     }
                     return true;
                 },

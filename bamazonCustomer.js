@@ -83,7 +83,7 @@ function startFunc() {
         var difference = chosenItem.stock_quantity - parseInt(answer.prodAmount);
         var totalCost = parseInt(answer.prodAmount) * chosenItem.price;
         var totalCostDecimal = totalCost.toFixed(2);
-        var totalProductSales = totalCostDecimal + chosenItem.product_sales;
+        var totalProductSales = parseFloat(totalCostDecimal) + parseFloat(chosenItem.product_sales);
         connection.query(
           "UPDATE products SET ? WHERE ?",
           [
