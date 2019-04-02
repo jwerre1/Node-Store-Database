@@ -13,3 +13,12 @@ CREATE TABLE products (
   PRIMARY KEY(id)
 );
 
+CREATE TABLE departments (
+  department_id INTEGER(10) AUTO_INCREMENT NOT NULL,
+  department_name VARCHAR(255) NOT NULL,
+  over_head_costs DECIMAL(10,2) DEFAULT 0,
+  PRIMARY KEY(department_id)
+);
+
+ALTER TABLE products
+ADD product_sales DECIMAL(10,2) DEFAULT 0;

@@ -12,3 +12,10 @@ VALUES ("Bananas", "Grocery", 0.54, 1000),
 
 
 SELECT * FROM products;
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Grocery", 10000),
+("Luxury", 75000),
+("Office Supplies", 20000),
+("Pet", 15000),
+("Pharmacy", 35000);
