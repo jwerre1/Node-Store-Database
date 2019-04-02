@@ -45,7 +45,7 @@ function begin() {
 }
 
 function prodSalesDept() {
-    var query = connection.query("SELECT departments.department_id AS department_id, departments.department_name AS department_name, departments.over_head_costs AS over_head_costs, SUM(products.product_sales) AS product_sales FROM departments INNER JOIN products ON departments.department_name = products.department_name GROUP BY department_id ORDER BY department_id ASC", function (err, results) {
+    var query = connection.query("SELECT departments.department_id AS department_id, departments.department_name AS department_name, departments.over_head_costs AS over_head_costs, SUM(products.product_sales) AS product_sales FROM departments LEFT JOIN products ON departments.department_name = products.department_name GROUP BY department_id ORDER BY department_id ASC", function (err, results) {
         if (err) throw err;
         // console.log(results);
 
@@ -69,6 +69,9 @@ function prodSalesDept() {
 
         for (i = 0; i < results.length; i++) {
             var totalProfit = results[i].product_sales - results[i].over_head_costs;
+            if (results[i].product_sales === null) {
+                results[i].product_sales = 0;
+            }
             table.push(
                 [results[i].department_id, results[i].department_name, results[i].over_head_costs, results[i].product_sales, totalProfit]
             );
@@ -82,7 +85,7 @@ function prodSalesDept() {
 }
 
 function createDept() {
-    connection.query("SELECT `id` FROM `products`", function (err, results) {
+    connection.query("SELECT `department_id` FROM `departments`", function (err, results) {
         if (err) throw err;
         // console.log(results);
         var existID = [];
@@ -114,31 +117,13 @@ function createDept() {
             },
             {
                 type: "input",
-                message: "What is the product name?",
+                message: "What is the department name?",
                 name: "name"
             },
             {
                 type: "input",
-                message: "What is the product department?",
-                name: "department"
-            },
-            {
-                type: "input",
-                message: "What is the product price?",
-                name: "price",
-
-                validate: function (answer) {
-                    if (isNaN(answer) === true) {
-                        return 'Please enter a number.';
-                    }
-
-                    return true;
-                }
-            },
-            {
-                type: "input",
-                message: "How many units would you like to add?",
-                name: "amount",
+                message: "What are the over head costs?",
+                name: "cost",
 
                 validate: function (answer) {
                     if (isNaN(answer) === true) {
@@ -150,21 +135,20 @@ function createDept() {
             }
 
         ]).then(function (answer) {
-            var price = parseFloat(answer.price);
-            var priceTwoInt = parseFloat(price.toFixed(2));
+            var cost = parseFloat(answer.cost);
+            var costTwoInt = parseFloat(cost.toFixed(2));
             var submitID = parseInt(answer.newID);
-            var submitAmount = parseInt(answer.amount);
             var query = connection.query(
-                "INSERT INTO products (id, product_name, department_name, price, stock_quantity) VALUES (?)",
+                "INSERT INTO departments (department_id, department_name, over_head_costs) VALUES (?)",
                 [
                     [
-                    submitID, answer.name, answer.department, priceTwoInt, submitAmount
+                    submitID, answer.name, costTwoInt
                     ]
                 ],
                 function (error) {
                     // console.log(query.sql);
                     if (error) throw error;
-                    console.log("\n" + answer.name + " added to the inventory.\n");
+                    console.log("\n" + answer.name + " added to the department list.\n");
                     begin();
                 }
             );
