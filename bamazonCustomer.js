@@ -26,7 +26,7 @@ function startFunc() {
     if (err) throw err;
     var table = new Table({
       head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
-      , colWidths: [5, 20, 15, 10, 17]
+      , colWidths: [5, 20, 20, 10, 17]
     });
 
     // table is an Array, so you can `push`, `unshift`, `splice` and friends
@@ -37,6 +37,12 @@ function startFunc() {
     }
    
     console.log("\n" + table.toString() + "\n");
+
+    var existID = [];
+
+    for (i = 0; i < results.length; i++) {
+        existID.push(results[i].id);
+    }
 
     inquirer.prompt([
 
@@ -49,6 +55,13 @@ function startFunc() {
           if (isNaN(answer) === true) {
             return 'Please enter a number.';
           }
+
+
+          else if (existID.indexOf(parseInt(answer)) === -1) {
+            // console.log(existID);
+            // console.log(answer);
+            return "Please enter an existing ID.";
+        }
 
           return true;
         },
